@@ -1,2 +1,2 @@
 # Cloud Automation Services
-Repository for VMware CAS
+Repository for VMware CAS - Cloud Assembly
