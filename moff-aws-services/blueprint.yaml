@@ -1,0 +1,15 @@
+name: Moff-AWS-Services
+version: v1
+inputs: {}
+resources:
+  Cloud_AWS_Volume_1:
+    type: Cloud.AWS.Volume
+    properties:
+      capacityGb: 1
+  Cloud_AWS_EC2_Instance_1:
+    type: Cloud.AWS.EC2.Instance
+    properties:
+      image: OAI-Base-Image
+      flavor: 'OAI-R4-Medium:t2.medium'
+      attachedDisks:
+        - source: '${resource.Cloud_AWS_Volume_1.id}'
