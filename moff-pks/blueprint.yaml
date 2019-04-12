@@ -1,0 +1,22 @@
+name: Moff-Agnostic
+version: v1
+inputs:
+  hostname:
+    type: string
+  size:
+    type: number
+    minimum: 3
+    maximum: 6
+  plan:
+    type: string
+    enum:
+      - Small
+      - Medium
+      - Large
+resources:
+  K8S_Cluster_1:
+    type: K8S.Cluster
+    properties:
+      hostname: '${input.hostname}'
+      workers: '${input.size}'
+      constraints:
