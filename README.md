@@ -1,7 +1,7 @@
 # Cloud Automation Services
 Repository for VMware CAS - Cloud Assembly
 
-#PKS Blueprint
+# PKS Blueprint
 
 Create Blueprints with PKS Clusters as a Canvas Item (sample blueprint inside this post)
 Publish these blueprints in Service Broker as catalog items
