@@ -1,4 +1,4 @@
-name: Moff-Agnostic
+name: Moff-PKS-K8-cluster
 version: v1
 inputs:
   hostname:
@@ -20,3 +20,4 @@ resources:
       hostname: '${input.hostname}'
       workers: '${input.size}'
       constraints:
+        - tag: '${"pks:" + to_lower(input.plan)}'
