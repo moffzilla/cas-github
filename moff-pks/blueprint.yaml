@@ -1,18 +1,17 @@
 name: Moff-PKS-K8-cluster
-version: v1
+version: v2
 inputs:
   hostname:
     type: string
   size:
     type: number
-    minimum: 3
-    maximum: 6
+    minimum: 1
+    maximum: 2
   plan:
     type: string
     enum:
-      - Small
-      - Medium
-      - Large
+      - small
+      - Production
 resources:
   K8S_Cluster_1:
     type: K8S.Cluster
@@ -20,4 +19,5 @@ resources:
       hostname: '${input.hostname}'
       workers: '${input.size}'
       constraints:
-        - tag: '${"pks:" + to_lower(input.plan)}'
+#        - tag: '${"pks:" + to_lower(input.plan)}'
+        - tag: pks
