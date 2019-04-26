@@ -1,5 +1,5 @@
 name: Moff-PKS-K8-cluster
-version: v3
+version: v4
 inputs:
   hostname:
     type: string
