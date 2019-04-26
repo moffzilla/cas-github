@@ -1,5 +1,5 @@
 name: Moff-PKS-K8-cluster
-version: v2
+version: v3
 inputs:
   hostname:
     type: string
@@ -14,7 +14,7 @@ inputs:
       - Production
 resources:
   K8S_Cluster_1:
-    type: K8S.Cluster
+    type: Cloud.K8S.Cluster
     properties:
       hostname: '${input.hostname}'
       workers: '${input.size}'
