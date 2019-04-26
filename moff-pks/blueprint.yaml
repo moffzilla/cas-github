@@ -1,5 +1,5 @@
 name: Moff-PKS-K8-cluster
-version: v4
+version: v6
 inputs:
   hostname:
     type: string
@@ -17,7 +17,7 @@ resources:
     type: Cloud.K8S.Cluster
     properties:
       hostname: '${input.hostname}'
-      workers: '${input.size}'
+      workers: '1'
       constraints:
 #        - tag: '${"pks:" + to_lower(input.plan)}'
         - tag: pks
