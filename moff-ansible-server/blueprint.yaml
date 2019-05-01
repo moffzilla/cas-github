@@ -1,5 +1,5 @@
 name: Moff-Ansible-Server
-version: v2
+version: v3
 # inputs: {}
 inputs:
   env:
