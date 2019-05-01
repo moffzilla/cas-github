@@ -1,5 +1,5 @@
 name: Moff-Ansible-Server
-version: v9
+version: v11
 # inputs: {}
 inputs:
   env:
@@ -30,7 +30,8 @@ resources:
       cloudConfig: |
         chpasswd:
           list: |
-            ubuntu:defaultpassword
+            ubuntu:'defaultpassword'
+          expire: 'false'
         runcmd:
           - sudo apt-get update -y && sudo apt-get upgrade -y 
           - sudo apt install -y python-minimal
@@ -42,4 +43,5 @@ resources:
           - sudo ssh-import-id-gh moffzilla
           - sudo sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/g'  /etc/ssh/sshd_config
           - sudo service sshd restart
+          - echo "Complete" > /home/ubuntu/status.txt
 #          - sudo ssh-import-id-gh moffzilla
