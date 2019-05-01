@@ -7,11 +7,11 @@ resources:
       image: OAI-Base-Image
       flavor: OAI-R4-Medium
       tags:
-        - key: vnf
-          value: basic
+        - key: ansible
+          value: 'yes'
       remoteAccess:
         authentication: keyPairName
-        keyPair: generic-cloud-wk      
+        keyPair: ansible-host      
       constraints:
 #        - tag: 'cloud:vsphere'
         - tag: 'cloud:aws'
@@ -20,17 +20,15 @@ resources:
       cloudConfig: |
         runcmd:
           - apt-get update -y 
-#          - sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/g'  /etc/ssh/sshd_config
-#          - service sshd restart
           - sudo ssh-import-id-gh moffzilla 
   Ansible:
     type: Cloud.Ansible
     properties:
       inventoryFile: /etc/ansible/hosts
-      username: root
+      username: ubuntu
       playbooks:
         provision:
-          - /root/playbooks/nginx-playbook.yml
+          - /home/ubuntu/playbooks/nginx-playbook.yml
       osType: linux
       groups:
         - GroupName
