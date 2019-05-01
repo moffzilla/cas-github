@@ -1,5 +1,5 @@
 name: Moff-Ansible-Server
-version: v6
+version: v7
 # inputs: {}
 inputs:
   env:
@@ -7,7 +7,7 @@ inputs:
     enum:
       - AWS
       - VSPHERE
-    default: PRIMARY
+    default: AWS
     title: Environment
     description: Target Environment
 resources:
