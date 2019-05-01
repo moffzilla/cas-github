@@ -1,0 +1,40 @@
+formatVersion: 1
+inputs: {}
+resources:
+  Cloud_Machine_1:
+    type: Cloud.Machine
+    properties:
+      image: OAI-Base-Image
+      flavor: OAI-R4-Medium
+      tags:
+        - key: vnf
+          value: basic
+      remoteAccess:
+        authentication: keyPairName
+        keyPair: generic-cloud-wk      
+      constraints:
+#        - tag: 'cloud:vsphere'
+        - tag: 'cloud:aws'
+#        - tag: 'cloud:azure'
+#        - tag: 'primary' 
+      cloudConfig: |
+        runcmd:
+          - apt-get update -y 
+#          - sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/g'  /etc/ssh/sshd_config
+#          - service sshd restart
+          - sudo ssh-import-id-gh moffzilla 
+  Ansible:
+    type: Cloud.Ansible
+    properties:
+      inventoryFile: /etc/ansible/hosts
+      username: root
+      playbooks:
+        provision:
+          - /root/playbooks/nginx-playbook.yml
+      osType: linux
+      groups:
+        - GroupName
+      maxConnectionRetries: 10
+      host: '${resource.Cloud_Machine_1.*}'
+      account: ubuntu
+      privateKeyFile: ~/.ssh/id_rsa
