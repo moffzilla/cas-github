@@ -1,5 +1,5 @@
 name: Moff-Ansible-Server
-version: v11
+version: v12
 # inputs: {}
 inputs:
   env:
@@ -33,11 +33,11 @@ resources:
             ubuntu:'defaultpassword'
           expire: 'false'
         runcmd:
-          - sudo apt-get update -y && sudo apt-get upgrade -y 
+#          - sudo apt-get update -y && sudo apt-get upgrade -y 
           - sudo apt install -y python-minimal
           - sudo apt install python-pip -y
           - sudo apt-add-repository ppa:ansible/ansible -y
-          - sudo apt-get update -y
+          - sudo apt-get update -y && sudo apt-get upgrade -y
           - sudo apt install -y python-minimal
           - sudo sh -c 'sed -i -e 's/#log_path/log_path/g' /etc/ansible/ansible.cfg'
           - sudo ssh-import-id-gh moffzilla
