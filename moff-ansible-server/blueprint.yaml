@@ -1,5 +1,5 @@
 name: Moff-Ansible-Server
-version: v13
+version: v14
 # inputs: {}
 inputs:
   env:
@@ -33,7 +33,7 @@ resources:
             ubuntu:'defaultpassword'
           expire: 'false'
         runcmd:
-#          - sudo apt-get update -y && sudo apt-get upgrade -y 
+          - sudo apt-get update -y && sudo apt-get upgrade -y 
           - sudo apt install -y python-minimal
           - sudo apt install python-pip -y
           - sudo apt-add-repository ppa:ansible/ansible -y
