@@ -1,0 +1,39 @@
+name: Moff-Ansible-Server
+version: v1
+# inputs: {}
+inputs:
+  env:
+    type: string
+    enum:
+      - PRIMARY
+      - VSPHERE
+    default: PRIMARY
+    title: Environment
+    description: Target Environment
+resources:
+  Cloud_Machine_1:
+    type: Cloud.Machine
+    properties:
+      image: OAI-Base-Image
+      flavor: OAI-R4-Small
+      tags:
+        - key: 'workload-type'
+          value: 'ansible-server'
+      remoteAccess:
+        authentication: keyPairName
+        keyPair: ansible-host
+      constraints:
+#        - tag: 'cloud:vsphere'
+#        - tag: 'primary'
+        - tag: '${to_lower(input.env)}'
+#        - tag: '${"cloud:" + to_lower(input.env)}'               
+      cloudConfig: |
+        runcmd:
+          - apt-get update -y 
+          - sudo apt update && sudo apt install -y python-minimal
+          - sudo apt-add-repository ppa:ansible/ansible -y
+          - sudo apt-get update -y
+          - sudo sh -c 'sed -i -e 's/#log_path/log_path/g' /etc/ansible/ansible.cfg' 
+#          - sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/g'  /etc/ssh/sshd_config
+#          - service sshd restart
+          - sudo ssh-import-id-gh moffzilla
