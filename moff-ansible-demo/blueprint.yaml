@@ -6,27 +6,28 @@ resources:
     type: Cloud.Machine
     properties:
       image: OAI-Base-Image
-      flavor: OAI-R4-Medium
+      flavor: OAI-R4-Small
       tags:
         - key: 'workload-type'
-          value: 'ansible-client'
+          value: 'ansible-server'      
+      constraints:
+        - tag: 'primary'
       remoteAccess:
         authentication: keyPairName
-        keyPair: ansible-host      
-      constraints:
-#        - tag: 'cloud:vsphere'
-        - tag: 'cloud:aws'
-#        - tag: 'cloud:azure'
-#        - tag: 'primary' 
+        keyPair: ansible-host
       cloudConfig: |
+        users:
+          - name: ubuntu
+            ssh-authorized-keys:
+              - ansible-server-key
         runcmd:
-#          - apt-get update -y 
+          - apt-get update -y 
           - sudo ssh-import-id-gh moffzilla 
   Ansible:
     type: Cloud.Ansible
     properties:
       inventoryFile: /etc/ansible/hosts
-      username: ubuntu
+      username: root
       playbooks:
         provision:
           - /home/ubuntu/playbooks/nginx-playbook.yml
