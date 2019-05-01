@@ -27,7 +27,7 @@ resources:
     type: Cloud.Ansible
     properties:
       inventoryFile: /etc/ansible/hosts
-      username: root
+      username: ubuntu
       playbooks:
         provision:
           - /home/ubuntu/playbooks/nginx-playbook.yml
