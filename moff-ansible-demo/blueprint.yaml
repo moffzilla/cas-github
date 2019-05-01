@@ -9,7 +9,7 @@ resources:
       flavor: OAI-R4-Small
       tags:
         - key: 'workload-type'
-          value: 'ansible-server'      
+          value: 'ansible-client'      
       constraints:
         - tag: 'cloud:vsphere'
       remoteAccess:
