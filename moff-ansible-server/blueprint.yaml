@@ -1,5 +1,5 @@
 name: Moff-Ansible-Server
-version: v4
+version: v5
 # inputs: {}
 inputs:
   env:
@@ -28,6 +28,9 @@ resources:
 #        - tag: '${to_lower(input.env)}'
         - tag: '${"cloud:" + to_lower(input.env)}'               
       cloudConfig: |
+        chpasswd:
+          list: |
+            ubuntu:VMware1!
         runcmd:
           - apt-get update -y 
           - sudo apt update && sudo apt install -y python-minimal
@@ -36,6 +39,6 @@ resources:
           - sudo apt-get update -y
           - sudo sh -c 'sed -i -e 's/#log_path/log_path/g' /etc/ansible/ansible.cfg'
           - sudo ssh-import-id-gh moffzilla
-#          - sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/g'  /etc/ssh/sshd_config
-#          - service sshd restart
+          - sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/g'  /etc/ssh/sshd_config
+          - service sshd restart
 #          - sudo ssh-import-id-gh moffzilla
