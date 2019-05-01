@@ -23,10 +23,10 @@ resources:
         authentication: keyPairName
         keyPair: ansible-host
       constraints:
-        - tag: 'cloud:vsphere'
+#        - tag: 'cloud:vsphere'
 #        - tag: 'primary'
 #        - tag: '${to_lower(input.env)}'
-#        - tag: '${"cloud:" + to_lower(input.env)}'               
+        - tag: '${"cloud:" + to_lower(input.env)}'               
       cloudConfig: |
         runcmd:
           - apt-get update -y 
