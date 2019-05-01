@@ -1,5 +1,5 @@
 name: Moff-Ansible-Demo
-version: v1
+version: v2
 inputs: {}
 resources:
   Cloud_Machine_1:
@@ -11,7 +11,7 @@ resources:
         - key: 'workload-type'
           value: 'ansible-server'      
       constraints:
-        - tag: 'primary'
+        - tag: 'cloud:vsphere'
       remoteAccess:
         authentication: keyPairName
         keyPair: ansible-host

@@ -1,5 +1,5 @@
 name: Moff-Ansible-Server
-version: v1
+version: v2
 # inputs: {}
 inputs:
   env:
@@ -23,14 +23,15 @@ resources:
         authentication: keyPairName
         keyPair: ansible-host
       constraints:
-#        - tag: 'cloud:vsphere'
+        - tag: 'cloud:vsphere'
 #        - tag: 'primary'
-        - tag: '${to_lower(input.env)}'
+#        - tag: '${to_lower(input.env)}'
 #        - tag: '${"cloud:" + to_lower(input.env)}'               
       cloudConfig: |
         runcmd:
           - apt-get update -y 
           - sudo apt update && sudo apt install -y python-minimal
+          - sudo apt install python-pip -y
           - sudo apt-add-repository ppa:ansible/ansible -y
           - sudo apt-get update -y
           - sudo sh -c 'sed -i -e 's/#log_path/log_path/g' /etc/ansible/ansible.cfg'
