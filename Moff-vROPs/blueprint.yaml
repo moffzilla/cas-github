@@ -1,0 +1,30 @@
+name: Moff-vROPs-Basic
+version: v1
+inputs:
+  vrops-ova:
+    type: string
+    title: vROPs OVA Image
+    default: 'http://10.149.95.226:8080/vRealize-Operations-Manager-Appliance-8.0.0.14771925_OVF10.ova'
+    description: Web URL for downloading vROPs OVA Image
+resources:
+  vROPs8:
+    type: Cloud.vSphere.Machine
+    properties:
+      cpuCount: 8
+      totalMemoryMB: 32000
+      networks:
+        - name: '${resource.wpnet.name}'
+          network: '${resource.wpnet.id}'
+          assignment: dynamic
+      tags:
+        - key: infrastructure
+          value: operations
+      imageRef: '${input.vrops-ova}'
+      storage:
+        maxDiskCapacityInGB: 250
+        bootDiskCapacityInGB: '250'
+  wpnet:
+    type: Cloud.Network
+    properties:
+      name: wpnet
+      networkType: existing
