@@ -1,0 +1,108 @@
+name: Moff-Ansible-Client
+version: v1
+inputs:
+  env:
+    type: string
+    enum:
+      - AWS
+      - VSPHERE
+      - AZURE
+    default: VSPHERE
+    title: Environment
+    description: Core Environment
+  ServerGroups:
+    type: string
+    enum:
+      - webservers
+      - appservers
+      - dbservers
+    default: webservers
+    title: Groups
+    description: Server Groups
+  Playbook:
+    type: string
+    enum:
+      - hello_cas.yml
+      - nginx-playbook.yml
+    default: hello_cas.yml
+    title: Playbook
+    description: Default Playbook
+resources:
+  Cloud_Ansible_1:
+    type: Cloud.Ansible
+    metadata:
+      layoutPosition:
+        - 1
+        - 1
+    properties:
+      host: '${resource.Cloud_Machine_1.*}'
+      osType: linux
+      account: Moff-Ansible-Pubilc-200
+      username: ubuntu
+      privateKeyFile: /tmp/id_rsa
+      groups:
+        #- webservers
+        - '${input.ServerGroups}'
+      playbooks:
+        provision:
+          - '${"/home/ansible/ansible-tower-samples/"+ input.Playbook}'
+  #- /home/ansible/ansible-tower-samples/hello_cas.yml
+  Cloud_Machine_1:
+    type: Cloud.Machine
+    metadata:
+      layoutPosition:
+        - 1
+        - 2
+    properties:
+      image: OAI-Base-Image
+      flavor: OAI-R4-xLarge
+      #      storage:
+      #        constraints:
+      #          - tag: tier-0
+      tags:
+        - key: vnf
+          value: basic
+      remoteAccess:
+        authentication: keyPairName
+        keyPair: generic-cloud-wk
+      constraints:
+        #        - tag: 'cloud:vsphere'
+        #        - tag: 'primary'
+        # - tag: '${to_lower(input.env)}'
+        - tag: '${"cloud:" + to_lower(input.env)}'
+      # - tag: 'cloud:azure'
+      cloudConfig: |
+        hostname: '${"moff-test-" + to_lower(input.env)}'
+        #repo_update: true
+        #repo_upgrade: all
+        #chpasswd:
+        #  list: |
+        #    ubuntu:VMware1!
+        #  expire: False
+          
+        runcmd:
+        #  - sudo sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g'  /etc/ssh/sshd_config
+        #  - sudo service sshd restart
+        #  - sudo apt update -y
+          - sudo apt install aptitude -y
+        #  - sudo apt install python -y
+      #          - sudo ssh-import-id-gh moffzilla 
+      cloudConfigSettings:
+        phoneHomeShouldWait: false
+        phoneHomeFailOnTimeout: false
+        phoneHomeTimeoutSeconds: 300
+      networks:
+        - name: '${resource.wpnet.name}'
+          network: '${resource.wpnet.id}'
+          assignment: dynamic
+  wpnet:
+    type: Cloud.Network
+    metadata:
+      layoutPosition:
+        - 2
+        - 0
+    properties:
+      name: wpnet
+      networkType: existing
+      constraints:
+        - tag: '${"cloud:" + to_lower(input.env)}'

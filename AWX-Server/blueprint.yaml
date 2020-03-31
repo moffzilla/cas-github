@@ -1,0 +1,78 @@
+name: Moff-AWX-Server
+version: v1
+# inputs: {}
+inputs:
+  env:
+    type: string
+    enum:
+      - AWS
+      - VSPHERE
+      - Azure
+      - GCP
+    default: AWS
+    title: Environment
+    description: Target Environment
+resources:
+  Cloud-AWX-1:
+    type: Cloud.Machine
+    metadata:
+      layoutPosition:
+        - 0
+        - 0
+    properties:
+      image: OAI-Base-Image-1804
+      flavor: OAI-R4-xLarge
+      tags:
+        - key: workload-type
+          value: ansible-server
+      remoteAccess:
+        authentication: keyPairName
+        keyPair: generic-cloud-wk
+      constraints:
+        - tag: '${"cloud:" + to_lower(input.env)}'
+      cloudConfig: |
+        hostname: '${"awx-tower-" + to_lower(input.env)}'
+        repo_update: true
+        repo_upgrade: all
+        packages:
+        - python-minimal
+        - python-pip
+        - apt-transport-https
+        - ca-certificates
+        - curl 
+        - gnupg-agent 
+        - software-properties-common
+        - aptitude
+        - git
+        - nodejs
+        - npm
+
+        runcmd:
+          #- sudo apt-get update -y && sudo DEBIAN_FRONTEND=noninteractive apt-get upgrade -yq
+          #- sudo apt install -y python-minimal
+          #- sudo apt install python-pip -y
+          - sudo apt-add-repository ppa:ansible/ansible -y
+          #- sudo apt-get install apt-transport-https ca-certificates curl gnupg-agent software-properties-common -y
+          - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+          - sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+          - sudo apt-get update -y
+          #- sudo apt install -y aptitude
+          #- sudo apt-get install -y git
+          - sudo apt-get install ansible -y
+          - sudo apt-get install docker-ce docker-ce-cli containerd.io -y
+          - sudo usermod -aG docker ubuntu
+          #- sudo apt-get install nodejs -y
+          #- sudo apt install nodejs-legacy -y
+          #- sudo apt install npm  -y
+          - sudo npm install npm --global
+          #- sudo apt install python-pip -y
+          - sudo chmod 777 /etc/ansible/hosts
+          - echo "localhost ansible_connection=local" > /etc/ansible/hosts
+          - sudo sh -c 'sed -i -e 's/#log_path/log_path/g' /etc/ansible/ansible.cfg'
+          - sudo DEBIAN_FRONTEND=noninteractive apt-get upgrade -yq
+          #- sudo pip uninstall docker docker-py docker-compose -y
+          - sudo pip install docker-compose
+          - git clone https://github.com/ansible/awx.git
+          - sh -c 'sed -i -e 's/all/localhost/g' $PWD/awx/installer/install.yml'          
+          - cd awx/installer
+          - ansible-playbook -i inventory install.yml
