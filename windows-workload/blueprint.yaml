@@ -1,0 +1,60 @@
+name: Windows-Workload
+version: 1
+formatVersion: 1
+inputs:
+  env:
+    type: string
+    enum:
+      - AWS
+      - VSPHERE
+      - AZURE
+    default: VSPHERE
+    title: Environment
+    description: Select Public or Private Cloud
+resources:
+  db_server_1:
+    type: Cloud.Machine
+    properties:
+      image: OAI-Windows2016
+      flavor: OAI-R4-xLarge
+      enable_advNotifcation: true
+      #remoteAccess:
+        #        authentication: usernamePassword
+        #        username: Administrator
+        #        password: C@n0n1c@l
+      remoteAccess:
+        authentication: keyPairName
+        keyPair: generic-cloud-wk
+      networks:
+        - network: '${resource.Cloud_Network_1.id}'
+      constraints:
+        - tag: '${"cloud:" + to_lower(input.env)}'
+      tags:
+        - key: deployment
+          value: '${env.deploymentName}'
+        - key: requestedby
+          value: '${env.requestedBy}'
+        - key: blueprintname
+          value: '${env.blueprintName}'
+      cloudConfig: |
+        #ps1_sysnative
+        Set-TimeZone -Name "Central Standard Time"
+        Set-ExecutionPolicy RemoteSigned -Force
+        Write-Output "Installing MySQL"
+        (new-object system.net.webclient).DownloadFile('http://10.149.95.226:8080/mysql-5.5.62-win32.msi','c:\Users\Administrator\mysql-5.5.62-win32.msi')
+        msiexec /i c:\Users\Administrator\mysql-5.5.62-win32.msi /quiet
+        reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Terminal Server" /v fDenyTSConnections /t REG_DWORD /d 0 /f
+        netsh advfirewall firewall set rule group="remote desktop" new enable=Yes
+        Write-Output "Installing Puppet 3.8.7"
+        (new-object system.net.webclient).DownloadFile('https://downloads.puppetlabs.com/windows/puppet-3.8.7-x64.msi','c:\Users\Administrator\puppet-3.8.7-x64.msi')
+        Restart-Computer
+      cloudConfigSettings:
+        phoneHomeShouldWait: false
+        phoneHomeFailOnTimeout: false
+        phoneHomeTimeoutSeconds: 300
+  Cloud_Network_1:
+    type: Cloud.Network
+    properties:
+      networkType: existing
+      constraints:
+        - tag: '${"cloud:" + to_lower(input.env)}'
